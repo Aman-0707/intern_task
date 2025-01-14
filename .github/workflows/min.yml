@@ -29,16 +29,28 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
-      # Step 5: Upload APK as an artifact
-      - name: push to release
+
+      # Step 5: Create a GitHub Release and upload the APK
+      - name: Push to Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/release/*"
-          tag : v0.0.1
+          tag: v0.0.1
+          name: "Release v0.0.1"
+          body: "This is the first release of the app."
+          draft: false
+          prerelease: false
 
-      # Step 5: Upload APK as an artifact
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+      # # Step 5: release
+      # - name: push to release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     artifacts: "build/app/outputs/apk/release/*"
+      #     tag : v0.0.1
+
+      # # Step 5: Upload APK as an artifact
+      # - name: Upload APK
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: app-release-apk
+      #     path: build/app/outputs/flutter-apk/app-release.apk
