@@ -6,7 +6,7 @@
 on:
   push:
     branches:
-    - master
+    - main
     
 # on: push    # Default will running for every branch.
     
@@ -17,16 +17,16 @@ jobs:
     steps:
     
     # Setup Java environment in order to build the Android app.
-    - uses: actions/checkout@v1
-    - uses: actions/setup-java@v1
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v2
       with:
         java-version: '12.x'
     
     # Setup the flutter environment.
-    - uses: subosito/flutter-action@v1
+    - uses: subosito/flutter-action@v2
       with:
-        #channel: 'stable' # 'dev', 'alpha', default to: 'stable'
-        flutter-version: '3.22.2' # you can also specify exact version of flutter
+        channel: 'stable' # 'dev', 'alpha', default to: 'stable'
+        #flutter-version: '3.22.2' # you can also specify exact version of flutter
     
     # Get flutter dependencies.
     - run: flutter pub get
