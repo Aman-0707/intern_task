@@ -6,6 +6,10 @@ import 'package:url_launcher/url_launcher.dart';
 class PortfolioPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   extendBody: true,
+    //   backgroundColor: Colors.grey,
+    // );
     return DefaultTabController(
       length: 8,
       child: Scaffold(
@@ -105,25 +109,25 @@ class _UrlLinkState extends State<UrlLink> {
         // ignore: prefer_const_literals_to_create_immutables
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // GestureDetector(
-          //   onTap: () async {
-          //     const url = 'https://www.google.com';
-          //     if (await canLaunch(url)) {
-          //       await launch(url, forceWebView: true, enableJavaScript: true);
-          //     } else {
-          //       throw 'Could not launch $url';
-          //     }
-          //   },
-          //   child: Center(
-          //     child: Text(
-          //       "Google",
-          //       style: TextStyle(
-          //           color: Colors.green,
-          //           fontSize: 25,
-          //           fontWeight: FontWeight.w400),
-          //     ),
-          //   ),
-          // ),
+          GestureDetector(
+            onTap: () async {
+              const url = 'https://www.google.com';
+              if (await canLaunch(url)) {
+                await launch(url, forceWebView: true, enableJavaScript: true);
+              } else {
+                throw 'Could not launch $url';
+              }
+            },
+            child: Center(
+              child: Text(
+                "Google",
+                style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w400),
+              ),
+            ),
+          ),
           Center(
             child: SizedBox(
               height: 200,

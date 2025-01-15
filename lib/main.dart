@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intern_task/login.dart';
 import 'package:intern_task/portfolioPage.dart';
+import 'package:intern_task/scrape.dart';
+import 'package:intern_task/sharesansarScrape.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: PortfolioPage(),
+      home: SSWebScraperScreen(),
     );
   }
 }
