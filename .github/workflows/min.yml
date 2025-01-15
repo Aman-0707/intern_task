@@ -38,9 +38,9 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/release/*"
-          tag: v0.0.1
-          name: "Release v0.0.1"
-          body: "This is the first release of the app."
+          tag: v0v0.${{github.run_number}}
+          name: "Release v0.${{github.run_number}}"
+          body: "This is the ${{github.run_number}} release of the app."
           draft: false
           prerelease: false
 
