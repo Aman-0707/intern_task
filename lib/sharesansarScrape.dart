@@ -2,9 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:intern_task/description.dart';
-import 'package:intl/intl.dart'; // For date formatting
+import 'package:intl/intl.dart';
 
 class SSWebScraperScreen extends StatefulWidget {
+  final Function onToggleTheme; // Callback to toggle the theme
+  final bool isDarkMode; // Current theme mode
+
+  const SSWebScraperScreen({
+    super.key,
+    required this.onToggleTheme,
+    this.isDarkMode = false,
+  });
+
   @override
   _WebScraperScreenState createState() => _WebScraperScreenState();
 }
@@ -12,12 +21,13 @@ class SSWebScraperScreen extends StatefulWidget {
 class _WebScraperScreenState extends State<SSWebScraperScreen> {
   List<Map<String, String>> _scrapedData = [];
   List<Map<String, String>> _scrapednxtData = [];
-
   bool _isLoading = true;
-
+  bool _currentThemeMode = false; // Track the current theme mode
+  List<Element> articles = [];
   @override
   void initState() {
     super.initState();
+    _currentThemeMode = widget.isDarkMode; // Initialize with the passed theme
     scrapeAllData(); // Scrape both websites at once
   }
 
@@ -75,6 +85,7 @@ class _WebScraperScreenState extends State<SSWebScraperScreen> {
                 : 'Invalid date',
           });
         }
+        print('sfldsfj');
       } else {
         print('Failed to load main webpage: ${response.statusCode}');
       }
@@ -83,7 +94,6 @@ class _WebScraperScreenState extends State<SSWebScraperScreen> {
     }
   }
 
-  ///nxt page
   Future<void> scrapeNxtWebsite() async {
     const url =
         'https://www.sharesansar.com/category/dividend-right-bonus?cursor=eyJwdWJsaXNoZWRfZGF0ZSI6IjIwMjUtMDEtMTMgMTQ6MjY6MDQiLCJfcG9pbnRzVG9OZXh0SXRlbXMiOnRydWV9';
@@ -137,16 +147,33 @@ class _WebScraperScreenState extends State<SSWebScraperScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Web Scraper'),
+        title: const Text('Web Scraper'),
+        actions: [
+          Row(
+            children: [
+              Icon(_currentThemeMode ? Icons.dark_mode : Icons.light_mode),
+              Switch(
+                value: _currentThemeMode,
+                onChanged: (value) {
+                  setState(() {
+                    _currentThemeMode = value; // Update the theme mode state
+                  });
+                  widget
+                      .onToggleTheme(); // Call the parent callback to toggle theme
+                },
+              ),
+            ],
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: _isLoading
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : _scrapedData.isEmpty
-                ? Center(
+                ? const Center(
                     child: Text(
                       'No data scraped.',
                       style: TextStyle(
@@ -161,23 +188,28 @@ class _WebScraperScreenState extends State<SSWebScraperScreen> {
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DesriptionScreen(
-                                        title: _scrapedData[index]['title']!,
-                                        imgUrl: _scrapedData[index]['image']!,
-                                        date: _scrapedData[index]['date']!,
-                                        descurl: _scrapedData[index]['a']!,
-                                      )));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DesriptionScreen(
+                                title: _scrapedData[index]['title']!,
+                                imgUrl: _scrapedData[index]['image']!,
+                                date: _scrapedData[index]['date']!,
+                                descurl: _scrapedData[index]['a']!,
+                              ),
+                            ),
+                          );
                         },
                         child: Card(
-                          margin: EdgeInsets.symmetric(vertical: 10),
+                          elevation: 5,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          color: _currentThemeMode
+                              ? Colors.grey[800] // Dark mode card background
+                              : Colors.white, // Light mode card background
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Image
                                 _scrapedData[index]['image'] != null &&
                                         _scrapedData[index]['image']!.isNotEmpty
                                     ? Image.network(
@@ -190,8 +222,8 @@ class _WebScraperScreenState extends State<SSWebScraperScreen> {
                                           return Container(
                                             width: 100,
                                             height: 100,
-                                            color: Colors.grey,
-                                            child: Icon(
+                                            color: Colors.black,
+                                            child: const Icon(
                                               Icons.image_not_supported,
                                               color: Colors.white,
                                             ),
@@ -202,15 +234,12 @@ class _WebScraperScreenState extends State<SSWebScraperScreen> {
                                         width: 100,
                                         height: 100,
                                         color: Colors.grey,
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.image_not_supported,
                                           color: Colors.white,
                                         ),
                                       ),
-
-                                SizedBox(width: 10),
-
-                                // Title and Date
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -221,14 +250,19 @@ class _WebScraperScreenState extends State<SSWebScraperScreen> {
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
+                                          color: _currentThemeMode
+                                              ? Colors.grey
+                                              : Colors.black,
                                         ),
                                       ),
-                                      SizedBox(height: 5),
+                                      const SizedBox(height: 5),
                                       Text(
                                         'Date: ${_scrapedData[index]['date']}',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: Colors.orange,
+                                          color: _currentThemeMode
+                                              ? Colors.orangeAccent
+                                              : Colors.orange,
                                         ),
                                       ),
                                     ],
