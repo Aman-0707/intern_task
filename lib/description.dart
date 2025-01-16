@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
-// For date formatting
 
 class DesriptionScreen extends StatefulWidget {
   final String title;
@@ -48,22 +47,30 @@ class _DesriptionScreenState extends State<DesriptionScreen> {
         final String description =
             descriptionElement?.text.trim() ?? 'No description available';
 
-        setState(() {
-          _description = description;
-        });
+        if (mounted) {
+          setState(() {
+            _description = description;
+          });
+        }
       } else {
-        setState(() {
-          _description = 'Failed to load description';
-        });
+        if (mounted) {
+          setState(() {
+            _description = 'Failed to load description';
+          });
+        }
       }
     } catch (e) {
-      setState(() {
-        _description = 'Error occurred while fetching description';
-      });
+      if (mounted) {
+        setState(() {
+          _description = 'Error occurred while fetching description';
+        });
+      }
     } finally {
-      setState(() {
-        _isLoading = false; // Hide loading after scraping is done
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false; // Hide loading after scraping is done
+        });
+      }
     }
   }
 
@@ -98,8 +105,6 @@ class _DesriptionScreenState extends State<DesriptionScreen> {
                 ),
               ),
               SizedBox(height: 20),
-              // Check if the description is available or still loading
-
               SizedBox(height: 20),
               Image.network(
                 widget.imgUrl,
