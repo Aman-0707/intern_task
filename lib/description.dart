@@ -1,10 +1,12 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
+import 'package:intern_task/datbaseService.dart'; // Update import according to your project structure
 
 class DesriptionScreen extends StatefulWidget {
   final String title;
-  final String imgUrl;
+  final Uint8List imgUrl;
   final String date;
   final String descurl;
 
@@ -21,58 +23,76 @@ class DesriptionScreen extends StatefulWidget {
 }
 
 class _DesriptionScreenState extends State<DesriptionScreen> {
-  String? _description; // Holds the fetched description
+  // String? _description; // Holds the fetched description
   bool _isLoading = true; // To show loading state
 
   @override
   void initState() {
     super.initState();
-    // Call the function to scrape description when the screen is initialized
-    _scrapeDescription();
+    // _scrapeDescription();
+    // _loadDescription();
   }
 
-  // Function to scrape the description from the article's URL
-  Future<void> _scrapeDescription() async {
-    try {
-      final String url = widget.descurl; // Construct URL using encoded title
+  // // Function to load the description from the database first
+  // Future<void> _loadDescription() async {
+  //   // First, try to load the description from the database
+  //   String? storedDescription =
+  //       await DatabaseHelper().getDescription(widget.title);
 
-      final response = await http.get(Uri.parse(url));
+  //   if (storedDescription != null) {
+  //     // If the description is found in the database, set it
+  //     setState(() {
+  //       _description = storedDescription;
+  //       _isLoading = false;
+  //     });
+  //   } else {
+  //     // If the description is not found, scrape it from the web
+  //     _scrapeDescription();
+  //   }
+  // }
 
-      if (response.statusCode == 200) {
-        final document = parse(response.body);
+  // // Function to scrape the description from the article's URL
+  // Future<void> _scrapeDescription() async {
+  //   try {
+  //     final String url = widget.descurl;
 
-        // Extract the description from the page (adjust selector according to actual HTML structure)
-        final descriptionElement = document.querySelector(
-            '#newsdetail-content'); // Assuming the description is inside this class
-        final String description =
-            descriptionElement?.text.trim() ?? 'No description available';
+  //     final response = await http.get(Uri.parse(url));
 
-        if (mounted) {
-          setState(() {
-            _description = description;
-          });
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            _description = 'Failed to load description';
-          });
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _description = 'Error occurred while fetching description';
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false; // Hide loading after scraping is done
-        });
-      }
-    }
-  }
+  //     if (response.statusCode == 200) {
+  //       final document = parse(response.body);
+
+  //       // Adjust selector according to actual HTML structure
+  //       final descriptionElement =
+  //           document.querySelector('#newsdetail-content');
+  //       final String description =
+  //           descriptionElement?.text.trim() ?? 'No description available';
+
+  //       // Save the description in the database
+  //       await DatabaseHelper().insertDescription(widget.title, description);
+
+  //       if (mounted) {
+  //         setState(() {
+  //           _description = description;
+  //           _isLoading = false;
+  //         });
+  //       }
+  //     } else {
+  //       if (mounted) {
+  //         setState(() {
+  //           _description = 'Failed to load description';
+  //           _isLoading = false;
+  //         });
+  //       }
+  //     }
+  //   } catch (e) {
+  //     if (mounted) {
+  //       setState(() {
+  //         _description = 'Error occurred while fetching description';
+  //         _isLoading = false;
+  //       });
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,16 +107,12 @@ class _DesriptionScreenState extends State<DesriptionScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 20,
-              ),
+              SizedBox(height: 20),
               Text(
                 widget.title,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(
-                height: 20,
-              ),
+              SizedBox(height: 20),
               Text(
                 widget.date,
                 style: TextStyle(
@@ -106,18 +122,17 @@ class _DesriptionScreenState extends State<DesriptionScreen> {
               ),
               SizedBox(height: 20),
               SizedBox(height: 20),
-              Image.network(
+              Image.memory(
                 widget.imgUrl,
                 width: 400,
                 height: 400,
                 fit: BoxFit.contain,
               ),
-              _isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : Text(
-                      _description ?? 'No description available',
-                      style: TextStyle(fontSize: 16),
-                    ),
+              Text(
+                widget.descurl,
+                // _description ?? 'No description available',
+                style: TextStyle(fontSize: 16),
+              ),
             ],
           ),
         ),

@@ -3,11 +3,23 @@
 <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
 <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 <uses-permission android:name="android.permission.INTERNET" />
+<!-- Samsung -->
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
+<uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+<uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <application
         android:label="intern_task"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6370835117089487~4370143396"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -21,10 +33,10 @@
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
-            <meta-data
+            <!-- <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
-              />
+              /> -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -35,6 +47,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+            
+            
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
