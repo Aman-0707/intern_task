@@ -1,0 +1,9 @@
+﻿{
+  "agentId": 21,
+  "agentName": "AMAN",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus12.actions.githubusercontent.com/gmREd1wCLF0uKYhgfqpDXImrbMOKbEWTa4TS2ZF8XREFAdM4pf/",
+  "gitHubUrl": "https://github.com/Aman-0707/intern_task",
+  "workFolder": "workflows"
+}
