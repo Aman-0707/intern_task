@@ -12,8 +12,6 @@ permissions:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
-    runs-on: AMAN
-
     steps:
       # Step 1: Checkout repository
       - name: Checkout repository
