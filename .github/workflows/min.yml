@@ -3,7 +3,7 @@ name: Build Flutter APK
 on:
   push:
     branches:
-      - main # Replace 'main' with your default branch name if different
+      - main # Replace 'main' with your default branch if different
   pull_request:
 
 permissions:
@@ -12,6 +12,7 @@ permissions:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+
     steps:
       # Step 1: Checkout repository
       - name: Checkout repository
@@ -21,41 +22,49 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.2' # e.g., '3.13.2' or 'stable'
+          flutter-version: '3.22.2' # Update if needed
 
-      # Step 3: Install dependencies
+      # Step 3: Clean & Upgrade Gradle
+      - name: Clean & Upgrade Gradle
+        run: |
+          flutter clean
+          flutter pub get
+          cd android
+          ./gradlew wrapper --gradle-version 8.2
+          cd ..
+
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # Step 4: Build APK
+      # Step 5: Build APK
       - name: Build APK
         run: flutter build apk --release
 
+      # Step 6: Get SHA-1 from APK
       - name: Get SHA-1 from APK
-        run:
-          keytool -printcert -jarfile build/app/outputs/apk/release/app-release.apk
-     
-      # Step 5: Create a GitHub Release and upload the APK
+        run: |
+          if [ -f "build/app/outputs/flutter-apk/app-release.apk" ]; then
+            keytool -printcert -jarfile build/app/outputs/flutter-apk/app-release.apk
+          else
+            echo "APK file not found!"
+            exit 1
+          fi
+
+      # Step 7: Upload APK as an artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # Step 8: Push to GitHub Release
       - name: Push to Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/apk/release/*"
-          tag: v0v0.${{github.run_number}}
+          artifacts: "build/app/outputs/flutter-apk/app-release.apk"
+          tag: v0.${{github.run_number}}
           name: "Release v0.${{github.run_number}}"
           body: "This is the ${{github.run_number}} release of the app."
           draft: false
           prerelease: false
-
-      # # Step 5: release
-      # - name: push to release
-      #   uses: ncipollo/release-action@v1
-      #   with:
-      #     artifacts: "build/app/outputs/apk/release/*"
-      #     tag : v0.0.1
-
-      # # Step 5: Upload APK as an artifact
-      # - name: Upload APK
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: app-release-apk
-      #     path: build/app/outputs/flutter-apk/app-release.apk
