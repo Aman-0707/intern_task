@@ -30,7 +30,7 @@ jobs:
         
       - name: Get SHA-1 from APK
         run: |
-          keytool -list -printcert -jarfile build/app/outputs/apk/release/app-release.apk
+          keytool -printcert -jarfile build/app/outputs/apk/release/app-release.apk
 
       # Step 4: Build APK
       - name: Build APK
